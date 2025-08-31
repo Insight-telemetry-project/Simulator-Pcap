@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36212.18 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendRecieveUDP", "SendRecieveUDP\SendRecieveUDP.csproj", "{B780E9A9-7EEF-4C19-AB40-B0A50F0EA3E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B780E9A9-7EEF-4C19-AB40-B0A50F0EA3E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B780E9A9-7EEF-4C19-AB40-B0A50F0EA3E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B780E9A9-7EEF-4C19-AB40-B0A50F0EA3E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B780E9A9-7EEF-4C19-AB40-B0A50F0EA3E5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {337EC66A-BB5B-499F-B41C-1D9E5C670812}
+	EndGlobalSection
+EndGlobal
