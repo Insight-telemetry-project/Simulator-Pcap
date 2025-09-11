@@ -3,261 +3,268 @@
 		"Name": "volt1",
 		"Units": "V",
 		"ByteLocation": 0,
-		"SizeBits": 32,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 50,
-		"Type": "float"
+		"Max": 50
 	},
 	{
 		"Name": "volt2",
 		"Units": "V",
-		"ByteLocation": 4,
-		"SizeBits": 32,
+		"ByteLocation": 2,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 50,
-		"Type": "float"
+		"Max": 50
 	},
 	{
 		"Name": "amp1",
 		"Units": "A",
-		"ByteLocation": 8,
-		"SizeBits": 32,
+		"ByteLocation": 4,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": -50,
-		"Max": 50,
-		"Type": "float"
+		"Max": 50
 	},
 	{
 		"Name": "amp2",
 		"Units": "A",
-		"ByteLocation": 12,
-		"SizeBits": 32,
+		"ByteLocation": 6,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": -50,
-		"Max": 50,
-		"Type": "float"
+		"Max": 50
 	},
+
 	{
 		"Name": "FQtyL",
 		"Units": "kg",
-		"ByteLocation": 16,
-		"SizeBits": 32,
+		"ByteLocation": 8,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": 0,
-		"Max": 100,
-		"Type": "float"
+		"Max": 100
 	},
 	{
 		"Name": "FQtyR",
 		"Units": "kg",
-		"ByteLocation": 20,
-		"SizeBits": 32,
+		"ByteLocation": 10,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": 0,
-		"Max": 100,
-		"Type": "float"
+		"Max": 100
 	},
 	{
 		"Name": "E1 FFlow",
 		"Units": "kg/h",
-		"ByteLocation": 24,
-		"SizeBits": 32,
+		"ByteLocation": 12,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": 0,
-		"Max": 100,
-		"Type": "float"
+		"Max": 100
 	},
 	{
 		"Name": "E1 OilT",
 		"Units": "C",
-		"ByteLocation": 28,
-		"SizeBits": 32,
+		"ByteLocation": 14,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": 0,
-		"Max": 500,
-		"Type": "float"
+		"Max": 500
 	},
 	{
 		"Name": "E1 OilP",
 		"Units": "psi",
-		"ByteLocation": 32,
-		"SizeBits": 32,
+		"ByteLocation": 16,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": 0,
-		"Max": 500,
-		"Type": "float"
+		"Max": 500
 	},
+
 	{
 		"Name": "E1 RPM",
 		"Units": "rpm",
-		"ByteLocation": 36,
-		"SizeBits": 32,
+		"ByteLocation": 18,
+		"SizeBits": 16,
+		"Scale": 1.0,
 		"Min": 0,
-		"Max": 10000,
-		"Type": "float"
+		"Max": 10000
 	},
+
 	{
 		"Name": "E1 CHT1",
 		"Units": "C",
-		"ByteLocation": 40,
-		"SizeBits": 32,
+		"ByteLocation": 20,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 800,
-		"Type": "float"
+		"Max": 800
 	},
 	{
 		"Name": "E1 CHT2",
 		"Units": "C",
-		"ByteLocation": 44,
-		"SizeBits": 32,
+		"ByteLocation": 22,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 800,
-		"Type": "float"
+		"Max": 800
 	},
 	{
 		"Name": "E1 CHT3",
 		"Units": "C",
-		"ByteLocation": 48,
-		"SizeBits": 32,
+		"ByteLocation": 24,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 800,
-		"Type": "float"
+		"Max": 800
 	},
 	{
 		"Name": "E1 CHT4",
 		"Units": "C",
-		"ByteLocation": 52,
-		"SizeBits": 32,
+		"ByteLocation": 26,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 800,
-		"Type": "float"
+		"Max": 800
 	},
+
 	{
 		"Name": "E1 EGT1",
 		"Units": "C",
-		"ByteLocation": 56,
-		"SizeBits": 32,
+		"ByteLocation": 28,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 4000,
-		"Type": "float"
+		"Max": 4000
 	},
 	{
 		"Name": "E1 EGT2",
 		"Units": "C",
-		"ByteLocation": 60,
-		"SizeBits": 32,
+		"ByteLocation": 30,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 4000,
-		"Type": "float"
+		"Max": 4000
 	},
 	{
 		"Name": "E1 EGT3",
 		"Units": "C",
-		"ByteLocation": 64,
-		"SizeBits": 32,
+		"ByteLocation": 32,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 4000,
-		"Type": "float"
+		"Max": 4000
 	},
 	{
 		"Name": "E1 EGT4",
 		"Units": "C",
-		"ByteLocation": 68,
-		"SizeBits": 32,
+		"ByteLocation": 34,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": 0,
-		"Max": 4000,
-		"Type": "float"
+		"Max": 4000
 	},
+
 	{
 		"Name": "OAT",
 		"Units": "C",
-		"ByteLocation": 72,
-		"SizeBits": 32,
+		"ByteLocation": 36,
+		"SizeBits": 16,
+		"Scale": 0.1,
 		"Min": -80,
-		"Max": 80,
-		"Type": "float"
+		"Max": 80
 	},
 	{
 		"Name": "IAS",
 		"Units": "kt",
-		"ByteLocation": 76,
-		"SizeBits": 32,
+		"ByteLocation": 38,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": 0,
-		"Max": 500,
-		"Type": "float"
+		"Max": 500
 	},
+
 	{
 		"Name": "VSpd",
 		"Units": "ft/min",
-		"ByteLocation": 80,
-		"SizeBits": 32,
+		"ByteLocation": 40,
+		"SizeBits": 16,
+		"Scale": 1.0,
 		"Min": -5000,
-		"Max": 5000,
-		"Type": "float"
+		"Max": 5000
 	},
 	{
 		"Name": "NormAc",
 		"Units": "g",
-		"ByteLocation": 84,
-		"SizeBits": 32,
+		"ByteLocation": 42,
+		"SizeBits": 16,
+		"Scale": 0.01,
 		"Min": -20,
-		"Max": 20,
-		"Type": "float"
+		"Max": 20
 	},
+
 	{
 		"Name": "AltMSL",
 		"Units": "ft",
-		"ByteLocation": 88,
-		"SizeBits": 32,
+		"ByteLocation": 44,
+		"SizeBits": 16,
+		"Scale": 1.0,
 		"Min": 0,
-		"Max": 50000,
-		"Type": "float"
+		"Max": 50000
 	},
 
 	{
 		"Name": "timestep",
-		"ByteLocation": 92,
-		"SizeBits": 32,
-		"Type": "int",
 		"Units": "ticks",
+		"ByteLocation": 46,
+		"SizeBits": 32,
+		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100000
 	},
 	{
 		"Name": "cluster",
-		"ByteLocation": 96,
-		"SizeBits": 8,
-		"Type": "int",
 		"Units": "id",
+		"ByteLocation": 50,
+		"SizeBits": 8,
+		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100
 	},
 	{
 		"Name": "Master Index",
-		"ByteLocation": 97,
-		"SizeBits": 32,
-		"Type": "int",
 		"Units": "idx",
+		"ByteLocation": 51,
+		"SizeBits": 32,
+		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100000
 	},
 	{
 		"Name": "date_diff",
-		"ByteLocation": 101,
-		"SizeBits": 16,
-		"Type": "int",
 		"Units": "days",
+		"ByteLocation": 55,
+		"SizeBits": 16,
+		"Scale": 1.0,
 		"Min": 0,
 		"Max": 1000
 	},
 	{
 		"Name": "flight_length",
-		"ByteLocation": 103,
-		"SizeBits": 32,
-		"Type": "int",
 		"Units": "min",
+		"ByteLocation": 57,
+		"SizeBits": 32,
+		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100000
 	},
 	{
 		"Name": "number_flights_before",
-		"ByteLocation": 107,
-		"SizeBits": 8,
-		"Type": "int",
 		"Units": "cnt",
+		"ByteLocation": 61,
+		"SizeBits": 8,
+		"Scale": 1.0,
 		"Min": -100,
 		"Max": 100
 	}

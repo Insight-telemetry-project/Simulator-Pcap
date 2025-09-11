@@ -1,4 +1,5 @@
-﻿using SendRecieveUDP.Model;
+﻿using SendRecieveUDP.Common.Constant;
+using SendRecieveUDP.Model;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -9,7 +10,7 @@ namespace SendRecieveUDP.Service
     {
         public static void ReceiveUDP(List<IcdField> icd)
         {
-            using var usp = new UdpClient(5000);
+            using var usp = new UdpClient(ConstantSend.PORT);
             Console.WriteLine("Listening on port 5000...");
 
             while (true)
@@ -20,48 +21,44 @@ namespace SendRecieveUDP.Service
                 Console.WriteLine("Received packet:");
                 for (int i = 0; i < icd.Count; i++)
                 {
-                    int offset = icd[i].ByteLocation;
-                    int sizeInBytes = icd[i].SizeBits / 8;
-                    byte[] fieldBytes = new byte[sizeInBytes];
-                    Buffer.BlockCopy(data, offset, fieldBytes, 0, sizeInBytes);
+                    var field = icd[i];
+                    int sizeInBytes = field.SizeBits / 8;
 
-                    if (icd[i].Type == "float")
+                    if (field.ByteLocation < 0 || field.ByteLocation + sizeInBytes > data.Length)
                     {
-                        float fval = BitConverter.ToSingle(fieldBytes, 0);
-                        Console.WriteLine($"  {icd[i].Name}: {fval}");
+                        Console.WriteLine($"  {field.Name}: out of bounds (offset={field.ByteLocation}, size={sizeInBytes}, len={data.Length})");
+                        continue;
                     }
-                    else if (icd[i].Type == "int")
-                    {
-                        if (sizeInBytes == 1)
-                        {
-                            if (icd[i].Min < 0)
-                            {
-                                sbyte sval = (sbyte)fieldBytes[0];
-                                Console.WriteLine($"  {icd[i].Name}: {sval}");
-                            }
-                            else
-                            {
-                                byte bval = fieldBytes[0];
-                                Console.WriteLine($"  {icd[i].Name}: {bval}");
-                            }
-                        }
-                        else if (sizeInBytes == 2)
-                        {
-                            short sval = BitConverter.ToInt16(fieldBytes, 0);
-                            Console.WriteLine($"  {icd[i].Name}: {sval}");
-                        }
-                        else if (sizeInBytes == 4)
-                        {
-                            int ival = BitConverter.ToInt32(fieldBytes, 0);
-                            Console.WriteLine($"  {icd[i].Name}: {ival}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"  {icd[i].Name}: unsupported int size ({sizeInBytes * 8} bits)");
-                        }
-                    }
+
+                    long raw = DecodeRaw(data, field.ByteLocation, sizeInBytes, field.Min < 0);
+                    double actual = raw * (field.Scale == 0 ? 1.0 : field.Scale);
+
+                    Console.WriteLine($"  {field.Name}: {actual} {field.Units}  [raw={raw}]");
                 }
+
                 Console.WriteLine();
+            }
+        }
+
+        private static long DecodeRaw(byte[] buffer, int offset, int sizeInBytes, bool isSigned)
+        {
+            switch (sizeInBytes)
+            {
+                case 1:
+                    return isSigned ? (sbyte)buffer[offset] : buffer[offset];
+
+                case 2:
+                    return isSigned
+                        ? BitConverter.ToInt16(buffer, offset)
+                        : BitConverter.ToUInt16(buffer, offset);
+
+                case 4:
+                    return isSigned
+                        ? BitConverter.ToInt32(buffer, offset)
+                        : BitConverter.ToUInt32(buffer, offset);
+
+                default:
+                    throw new NotSupportedException($"Unsupported field size: {sizeInBytes * ConstantSend.BITS_IN_BYTE} bits");
             }
         }
     }

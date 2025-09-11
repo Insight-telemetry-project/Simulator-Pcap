@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
 using SendRecieveUDP.Common.Constant;
+
 namespace SendRecieveUDP.Service
 {
     internal static class Send
@@ -12,11 +13,7 @@ namespace SendRecieveUDP.Service
         public static void SendCSV(string csvFile, List<IcdField> icd)
         {
             var lines = File.ReadAllLines(csvFile);
-            if (lines.Length < 2)
-            {
-                Console.WriteLine("CSV is empty or has no data rows.");
-                return;
-            }
+            if (lines.Length < 2) return;
 
             var headers = lines[0].Split(',');
             var dataLines = lines.Skip(1);
@@ -33,13 +30,12 @@ namespace SendRecieveUDP.Service
 
                 byte[] packet = BuildPacket(line, icd, headerIndex);
                 udp.Send(packet, packet.Length, ConstantSend.LOCALHOST, ConstantSend.PORT);
-                Console.WriteLine($"Sent packet of {packet.Length} bytes");
             }
         }
 
         private static byte[] BuildPacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
-            int totalSize = icd.Max(f => f.ByteLocation + (f.SizeBits / 8));
+            int totalSize = icd.Max(f => f.ByteLocation + (f.SizeBits / ConstantSend.BITS_IN_BYTE));
             byte[] packet = new byte[totalSize];
 
             var values = csvLine.Split(',');
@@ -50,16 +46,11 @@ namespace SendRecieveUDP.Service
                 if (colIndex < 0 || colIndex >= values.Length) continue;
 
                 string strVal = values[colIndex];
-
                 byte[] bytes = EncodeField(strVal, field);
-
                 int sizeInBytes = field.SizeBits / ConstantSend.BITS_IN_BYTE;
 
                 if (field.ByteLocation < 0 || field.ByteLocation + sizeInBytes > packet.Length)
-                {
-                    throw new InvalidOperationException(
-                        $"ICD overflow for '{field.Name}': offset={field.ByteLocation}, size={sizeInBytes}, packetLen={packet.Length}");
-                }
+                    throw new InvalidOperationException($"ICD overflow for '{field.Name}': offset={field.ByteLocation}, size={sizeInBytes}, packetLen={packet.Length}");
 
                 Buffer.BlockCopy(bytes, 0, packet, field.ByteLocation, sizeInBytes);
             }
@@ -69,39 +60,32 @@ namespace SendRecieveUDP.Service
 
         private static byte[] EncodeField(string strVal, IcdField field)
         {
+            if (!double.TryParse(strVal, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double actual))
+                throw new FormatException($"Cannot parse '{field.Name}' value '{strVal}'");
+
+            double scale = field.Scale == 0 ? 1.0 : field.Scale;
+            double rawDouble = actual / scale;
+            long raw = checked((long)Math.Round(rawDouble, MidpointRounding.ToEven));
+
             int sizeInBytes = field.SizeBits / ConstantSend.BITS_IN_BYTE;
+            bool isSigned = field.Min < 0;
 
-            if (field.Type == "float")
+            return sizeInBytes switch
             {
-                if (!float.TryParse(strVal, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out float fval))
-                    fval = 0f;
+                ConstantSend.BYTE_SIZE => isSigned
+                    ? new[] { unchecked((byte)(sbyte)checked(raw)) }
+                    : new[] { (byte)checked(raw) },
 
-                return BitConverter.GetBytes(fval);
-            }
+                ConstantSend.SHORT_SIZE => isSigned
+                    ? BitConverter.GetBytes((short)checked(raw))
+                    : BitConverter.GetBytes((ushort)checked(raw)),
 
-            if (!int.TryParse(strVal, NumberStyles.Integer, CultureInfo.InvariantCulture, out int ival))
-                ival = 0;
+                ConstantSend.INT_SIZE => isSigned
+                    ? BitConverter.GetBytes((int)checked(raw))
+                    : BitConverter.GetBytes((uint)checked(raw)),
 
-            if (sizeInBytes == ConstantSend.BYTE_SIZE)
-            {
-                if (field.Min < 0) 
-                    return new byte[] { unchecked((byte)(sbyte)ival) };
-                else               
-                    return new byte[] { (byte)ival };
-            }
-            else if (sizeInBytes == ConstantSend.SHORT_SIZE)
-            {
-                return BitConverter.GetBytes((short)ival);
-            }
-            else if (sizeInBytes == ConstantSend.INT_SIZE)
-            {
-                return BitConverter.GetBytes(ival);
-            }
-            else
-            {
-                throw new NotSupportedException($"Unsupported int SizeBits={field.SizeBits} for '{field.Name}'");
-            }
+                _ => throw new NotSupportedException($"Unsupported SizeBits={field.SizeBits} for '{field.Name}'")
+            };
         }
-
     }
 }
