@@ -10,25 +10,16 @@ namespace SendRecieveUDP
         static void Main(string[] args)
         {
             string icdJson = File.ReadAllText("icd.json");
-            var icd = JsonSerializer.Deserialize<List<IcdField>>(icdJson);
+            List<IcdField> icd = JsonSerializer.Deserialize<List<IcdField>>(icdJson);
 
-            Thread recieverThread = new Thread(() =>
-            {
-                Service.Recieve.ReceiveUDP(icd);
-            });
+            
 
-            recieverThread.IsBackground = true;
-            recieverThread.Start();
-            Thread.Sleep(500);
-
-
-
-
+            Task.Run(() => Service.Recieve.ReceiveUDP(icd));
 
             CleanCsv.Run("5ROW.csv", "Longest_Master_23517_clean.csv");
 
 
-            Send.SendCSV("Longest_Master_23517_clean.csv", icd);
+            Send.SendCsv("Longest_Master_23517_clean.csv", icd);
 
 
 

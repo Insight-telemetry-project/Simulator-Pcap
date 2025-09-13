@@ -19,19 +19,21 @@ namespace SendRecieveUDP.Service
                 byte[] data = usp.Receive(ref remoteEP);
 
                 Console.WriteLine("Received packet:");
-                for (int i = 0; i < icd.Count; i++)
+                foreach (var field in icd)
                 {
-                    var field = icd[i];
-                    int sizeInBytes = field.SizeBits / 8;
-
-                    if (field.ByteLocation < 0 || field.ByteLocation + sizeInBytes > data.Length)
+                    int lastBit = field.BitOffset + field.SizeBits;
+                    if (lastBit > data.Length * ConstantSend.BITS_IN_BYTE)
                     {
-                        Console.WriteLine($"  {field.Name}: out of bounds (offset={field.ByteLocation}, size={sizeInBytes}, len={data.Length})");
+                        Console.WriteLine($"  {field.Name}: out of bounds (bitOffset={field.BitOffset}, sizeBits={field.SizeBits}, lenBits={data.Length * 8})");
                         continue;
                     }
 
-                    long raw = DecodeRaw(data, field.ByteLocation, sizeInBytes, field.Min < 0);
-                    double actual = raw * (field.Scale == 0 ? 1.0 : field.Scale);
+                    ulong value = ReadBits(data, field.BitOffset, field.SizeBits);
+
+                    double scale = field.Scale;
+                    double valueMin = Math.Round(field.Min / scale);
+                    double raw = value + valueMin;
+                    double actual = raw * scale;
 
                     Console.WriteLine($"  {field.Name}: {actual} {field.Units}  [raw={raw}]");
                 }
@@ -40,26 +42,19 @@ namespace SendRecieveUDP.Service
             }
         }
 
-        private static long DecodeRaw(byte[] buffer, int offset, int sizeInBytes, bool isSigned)
+        private static ulong ReadBits(byte[] buffer, int bitOffset, int bitCount)
         {
-            switch (sizeInBytes)
+
+            
+            ulong value = 0UL;
+            for (int i = 0; i < bitCount; i++)
             {
-                case 1:
-                    return isSigned ? (sbyte)buffer[offset] : buffer[offset];
-
-                case 2:
-                    return isSigned
-                        ? BitConverter.ToInt16(buffer, offset)
-                        : BitConverter.ToUInt16(buffer, offset);
-
-                case 4:
-                    return isSigned
-                        ? BitConverter.ToInt32(buffer, offset)
-                        : BitConverter.ToUInt32(buffer, offset);
-
-                default:
-                    throw new NotSupportedException($"Unsupported field size: {sizeInBytes * ConstantSend.BITS_IN_BYTE} bits");
+                int byteIdx = (bitOffset + i) / ConstantSend.BITS_IN_BYTE;
+                int bitIdx = (bitOffset + i) % ConstantSend.BITS_IN_BYTE;
+                int bit = (buffer[byteIdx] >> bitIdx) & ConstantSend.BYTE_SIZE;
+                value |= ((ulong)bit << i);
             }
+            return value;
         }
     }
 }

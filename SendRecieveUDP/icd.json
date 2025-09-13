@@ -2,8 +2,8 @@
 	{
 		"Name": "volt1",
 		"Units": "V",
-		"ByteLocation": 0,
-		"SizeBits": 16,
+		"BitOffset": 0,
+		"SizeBits": 9,
 		"Scale": 0.1,
 		"Min": 0,
 		"Max": 50
@@ -11,8 +11,8 @@
 	{
 		"Name": "volt2",
 		"Units": "V",
-		"ByteLocation": 2,
-		"SizeBits": 16,
+		"BitOffset": 9,
+		"SizeBits": 9,
 		"Scale": 0.1,
 		"Min": 0,
 		"Max": 50
@@ -20,8 +20,8 @@
 	{
 		"Name": "amp1",
 		"Units": "A",
-		"ByteLocation": 4,
-		"SizeBits": 16,
+		"BitOffset": 18,
+		"SizeBits": 10,
 		"Scale": 0.1,
 		"Min": -50,
 		"Max": 50
@@ -29,8 +29,8 @@
 	{
 		"Name": "amp2",
 		"Units": "A",
-		"ByteLocation": 6,
-		"SizeBits": 16,
+		"BitOffset": 28,
+		"SizeBits": 10,
 		"Scale": 0.1,
 		"Min": -50,
 		"Max": 50
@@ -39,8 +39,8 @@
 	{
 		"Name": "FQtyL",
 		"Units": "kg",
-		"ByteLocation": 8,
-		"SizeBits": 16,
+		"BitOffset": 38,
+		"SizeBits": 14,
 		"Scale": 0.01,
 		"Min": 0,
 		"Max": 100
@@ -48,8 +48,8 @@
 	{
 		"Name": "FQtyR",
 		"Units": "kg",
-		"ByteLocation": 10,
-		"SizeBits": 16,
+		"BitOffset": 52,
+		"SizeBits": 14,
 		"Scale": 0.01,
 		"Min": 0,
 		"Max": 100
@@ -57,16 +57,17 @@
 	{
 		"Name": "E1 FFlow",
 		"Units": "kg/h",
-		"ByteLocation": 12,
-		"SizeBits": 16,
+		"BitOffset": 66,
+		"SizeBits": 14,
 		"Scale": 0.01,
 		"Min": 0,
 		"Max": 100
 	},
+
 	{
 		"Name": "E1 OilT",
 		"Units": "C",
-		"ByteLocation": 14,
+		"BitOffset": 80,
 		"SizeBits": 16,
 		"Scale": 0.01,
 		"Min": 0,
@@ -75,7 +76,7 @@
 	{
 		"Name": "E1 OilP",
 		"Units": "psi",
-		"ByteLocation": 16,
+		"BitOffset": 96,
 		"SizeBits": 16,
 		"Scale": 0.01,
 		"Min": 0,
@@ -85,8 +86,8 @@
 	{
 		"Name": "E1 RPM",
 		"Units": "rpm",
-		"ByteLocation": 18,
-		"SizeBits": 16,
+		"BitOffset": 112,
+		"SizeBits": 14,
 		"Scale": 1.0,
 		"Min": 0,
 		"Max": 10000
@@ -95,8 +96,8 @@
 	{
 		"Name": "E1 CHT1",
 		"Units": "C",
-		"ByteLocation": 20,
-		"SizeBits": 16,
+		"BitOffset": 126,
+		"SizeBits": 13,
 		"Scale": 0.1,
 		"Min": 0,
 		"Max": 800
@@ -104,8 +105,8 @@
 	{
 		"Name": "E1 CHT2",
 		"Units": "C",
-		"ByteLocation": 22,
-		"SizeBits": 16,
+		"BitOffset": 139,
+		"SizeBits": 13,
 		"Scale": 0.1,
 		"Min": 0,
 		"Max": 800
@@ -113,8 +114,8 @@
 	{
 		"Name": "E1 CHT3",
 		"Units": "C",
-		"ByteLocation": 24,
-		"SizeBits": 16,
+		"BitOffset": 152,
+		"SizeBits": 13,
 		"Scale": 0.1,
 		"Min": 0,
 		"Max": 800
@@ -122,8 +123,8 @@
 	{
 		"Name": "E1 CHT4",
 		"Units": "C",
-		"ByteLocation": 26,
-		"SizeBits": 16,
+		"BitOffset": 165,
+		"SizeBits": 13,
 		"Scale": 0.1,
 		"Min": 0,
 		"Max": 800
@@ -132,7 +133,7 @@
 	{
 		"Name": "E1 EGT1",
 		"Units": "C",
-		"ByteLocation": 28,
+		"BitOffset": 178,
 		"SizeBits": 16,
 		"Scale": 0.1,
 		"Min": 0,
@@ -141,7 +142,7 @@
 	{
 		"Name": "E1 EGT2",
 		"Units": "C",
-		"ByteLocation": 30,
+		"BitOffset": 194,
 		"SizeBits": 16,
 		"Scale": 0.1,
 		"Min": 0,
@@ -150,7 +151,7 @@
 	{
 		"Name": "E1 EGT3",
 		"Units": "C",
-		"ByteLocation": 32,
+		"BitOffset": 210,
 		"SizeBits": 16,
 		"Scale": 0.1,
 		"Min": 0,
@@ -159,7 +160,7 @@
 	{
 		"Name": "E1 EGT4",
 		"Units": "C",
-		"ByteLocation": 34,
+		"BitOffset": 226,
 		"SizeBits": 16,
 		"Scale": 0.1,
 		"Min": 0,
@@ -169,8 +170,8 @@
 	{
 		"Name": "OAT",
 		"Units": "C",
-		"ByteLocation": 36,
-		"SizeBits": 16,
+		"BitOffset": 242,
+		"SizeBits": 11,
 		"Scale": 0.1,
 		"Min": -80,
 		"Max": 80
@@ -178,7 +179,7 @@
 	{
 		"Name": "IAS",
 		"Units": "kt",
-		"ByteLocation": 38,
+		"BitOffset": 253,
 		"SizeBits": 16,
 		"Scale": 0.01,
 		"Min": 0,
@@ -188,8 +189,8 @@
 	{
 		"Name": "VSpd",
 		"Units": "ft/min",
-		"ByteLocation": 40,
-		"SizeBits": 16,
+		"BitOffset": 269,
+		"SizeBits": 14,
 		"Scale": 1.0,
 		"Min": -5000,
 		"Max": 5000
@@ -197,8 +198,8 @@
 	{
 		"Name": "NormAc",
 		"Units": "g",
-		"ByteLocation": 42,
-		"SizeBits": 16,
+		"BitOffset": 283,
+		"SizeBits": 12,
 		"Scale": 0.01,
 		"Min": -20,
 		"Max": 20
@@ -207,7 +208,7 @@
 	{
 		"Name": "AltMSL",
 		"Units": "ft",
-		"ByteLocation": 44,
+		"BitOffset": 295,
 		"SizeBits": 16,
 		"Scale": 1.0,
 		"Min": 0,
@@ -217,8 +218,8 @@
 	{
 		"Name": "timestep",
 		"Units": "ticks",
-		"ByteLocation": 46,
-		"SizeBits": 32,
+		"BitOffset": 311,
+		"SizeBits": 17,
 		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100000
@@ -226,8 +227,8 @@
 	{
 		"Name": "cluster",
 		"Units": "id",
-		"ByteLocation": 50,
-		"SizeBits": 8,
+		"BitOffset": 328,
+		"SizeBits": 7,
 		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100
@@ -235,17 +236,18 @@
 	{
 		"Name": "Master Index",
 		"Units": "idx",
-		"ByteLocation": 51,
-		"SizeBits": 32,
+		"BitOffset": 335,
+		"SizeBits": 17,
 		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100000
 	},
+
 	{
 		"Name": "date_diff",
 		"Units": "days",
-		"ByteLocation": 55,
-		"SizeBits": 16,
+		"BitOffset": 352,
+		"SizeBits": 10,
 		"Scale": 1.0,
 		"Min": 0,
 		"Max": 1000
@@ -253,8 +255,8 @@
 	{
 		"Name": "flight_length",
 		"Units": "min",
-		"ByteLocation": 57,
-		"SizeBits": 32,
+		"BitOffset": 362,
+		"SizeBits": 17,
 		"Scale": 1.0,
 		"Min": 0,
 		"Max": 100000
@@ -262,7 +264,7 @@
 	{
 		"Name": "number_flights_before",
 		"Units": "cnt",
-		"ByteLocation": 61,
+		"BitOffset": 379,
 		"SizeBits": 8,
 		"Scale": 1.0,
 		"Min": -100,

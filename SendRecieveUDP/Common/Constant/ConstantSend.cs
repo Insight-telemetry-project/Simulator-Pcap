@@ -17,6 +17,8 @@ namespace SendRecieveUDP.Common.Constant
         public const int INT_SIZE = 4;   
         public const int FLOAT_SIZE = 4;
         public const int BITS_IN_BYTE = 8;
-
+        public const int ONLY_TITLES = 2;
+        public const int TITLE_ROW = 0;
+        public const int ROUND_TO_BYTE = 7;
     }
 }

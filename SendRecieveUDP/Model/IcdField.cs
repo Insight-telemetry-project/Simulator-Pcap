@@ -10,7 +10,7 @@ namespace SendRecieveUDP.Model
     {
         public string Name { get; set; }
         public string Units { get; set; }
-        public int ByteLocation { get; set; }
+        public int BitOffset { get; set; }
         public int SizeBits { get; set; }
         public double Scale { get; set; }
         public double Min { get; set; }
