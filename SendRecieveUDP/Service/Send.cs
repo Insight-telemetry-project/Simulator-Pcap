@@ -8,9 +8,9 @@ using SendRecieveUDP.Common.Constant;
 
 namespace SendRecieveUDP.Service
 {
-    internal static class Send
+    public class Send : ISend
     {
-        public static void SendCsv(string csvFile, List<IcdField> icd)
+        public void SendCsv(string csvFile, List<IcdField> icd)
         {
             var lines = File.ReadAllLines(csvFile);
             if (lines.Length < ConstantSend.ONLY_TITLES) return;
@@ -33,9 +33,9 @@ namespace SendRecieveUDP.Service
             }
         }
 
-        private static byte[] BuildPacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
+        private byte[] BuildPacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
-            
+
 
             int lastBit = icd.Max(field => field.BitOffset + field.SizeBits);
             int totalBytes = (lastBit + ConstantSend.ROUND_TO_BYTE) / ConstantSend.BITS_IN_BYTE;
@@ -72,7 +72,7 @@ namespace SendRecieveUDP.Service
             return packet;
         }
 
-        private static void WriteBits(byte[] buffer, int bitOffset, int bitCount, ulong value)
+        private void WriteBits(byte[] buffer, int bitOffset, int bitCount, ulong value)
         {
             for (int i = 0; i < bitCount; i++)
             {

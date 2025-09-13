@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SendRecieveUDP.Model
 {
-    internal class IcdField
+    public class IcdField
     {
         public string Name { get; set; }
         public string Units { get; set; }

@@ -6,9 +6,9 @@ using System.Net.Sockets;
 
 namespace SendRecieveUDP.Service
 {
-    internal static class Recieve
+    internal class Recieve: IRecieve
     {
-        public static void ReceiveUDP(List<IcdField> icd)
+        public void ReceiveUDP(List<IcdField> icd)
         {
             using var usp = new UdpClient(ConstantSend.PORT);
             Console.WriteLine("Listening on port 5000...");
@@ -42,7 +42,7 @@ namespace SendRecieveUDP.Service
             }
         }
 
-        private static ulong ReadBits(byte[] buffer, int bitOffset, int bitCount)
+        private ulong ReadBits(byte[] buffer, int bitOffset, int bitCount)
         {
 
             

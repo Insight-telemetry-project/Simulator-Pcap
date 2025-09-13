@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SendRecieveUDP.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace SendRecieveUDP.Service
 {
-    internal class CleanCsv
+    public class CleanCsv : ICsvCleaner
     {
-        public static void Run(string inputFile, string outputFile)
+        public void Run(string inputFile, string outputFile)
         {
             if (!File.Exists(inputFile))
             {

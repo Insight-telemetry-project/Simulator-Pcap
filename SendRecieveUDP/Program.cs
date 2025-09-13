@@ -1,8 +1,8 @@
-﻿using SendRecieveUDP.Model;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SendRecieveUDP.Model;
 using SendRecieveUDP.Service;
-using System.Net.Sockets;
-using System.Text;
 using System.Text.Json;
+
 namespace SendRecieveUDP
 {
     internal class Program
@@ -12,15 +12,25 @@ namespace SendRecieveUDP
             string icdJson = File.ReadAllText("icd.json");
             List<IcdField> icd = JsonSerializer.Deserialize<List<IcdField>>(icdJson);
 
-            
+            var services = new ServiceCollection();
+            services.AddScoped<ICsvCleaner, CleanCsv>();
+            services.AddScoped<ISend, Send>();
+            services.AddScoped<IRecieve, Recieve>();
+            using var provider = services.BuildServiceProvider();
 
-            Task.Run(() => Service.Recieve.ReceiveUDP(icd));
+            var reciever = provider.GetRequiredService<IRecieve>();
 
-            CleanCsv.Run("5ROW.csv", "Longest_Master_23517_clean.csv");
+            Task.Run(() => reciever.ReceiveUDP(icd));
 
 
-            Send.SendCsv("Longest_Master_23517_clean.csv", icd);
 
+
+
+            var cleaner = provider.GetRequiredService<ICsvCleaner>();
+            cleaner.Run("5ROW.csv", "Longest_Master_23517_clean.csv");
+
+            var sender = provider.GetRequiredService<ISend>();
+            sender.SendCsv("Longest_Master_23517_clean.csv", icd);
 
 
             Console.WriteLine("Press ENTER to exit...");
