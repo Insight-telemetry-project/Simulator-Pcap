@@ -16,6 +16,7 @@ namespace SendRecieveUDP
             services.AddScoped<ICsvCleaner, CleanCsv>();
             services.AddScoped<ISend, Send>();
             services.AddScoped<IRecieve, Recieve>();
+            services.AddScoped<IBitManipulator, BitManipulator>();
             using var provider = services.BuildServiceProvider();
 
             var reciever = provider.GetRequiredService<IRecieve>();

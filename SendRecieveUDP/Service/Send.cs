@@ -10,12 +10,23 @@ namespace SendRecieveUDP.Service
 {
     public class Send : ISend
     {
+        private readonly IBitManipulator _bitManipulator;
+
+        public Send(IBitManipulator bitManipulator)
+        {
+            _bitManipulator = bitManipulator;
+        }
+
         public void SendCsv(string csvFile, List<IcdField> icd)
         {
-            var lines = File.ReadAllLines(csvFile);
-            if (lines.Length < ConstantSend.ONLY_TITLES) return;
+            string[] lines = File.ReadAllLines(csvFile);
+            if (lines.Length < ConstantSend.ONLY_TITLES) 
+            {
+                Console.WriteLine("CSV file does not contain enough lines.");
+                return;
+            }
 
-            var headers = lines[ConstantSend.TITLE_ROW].Split(',');
+            string[] headers = lines[ConstantSend.TITLE_ROW].Split(',');
             var dataLines = lines.Skip(1);
 
             var headerIndex = headers
@@ -24,12 +35,13 @@ namespace SendRecieveUDP.Service
 
             using var udp = new UdpClient();
 
-            foreach (var line in dataLines)
+            foreach (string line in dataLines)
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-
-                byte[] packet = BuildPacket(line, icd, headerIndex);
-                udp.Send(packet, packet.Length, ConstantSend.LOCALHOST, ConstantSend.PORT);
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    byte[] packet = BuildPacket(line, icd, headerIndex);
+                    udp.Send(packet, packet.Length, ConstantSend.LOCALHOST, ConstantSend.PORT);
+                }
             }
         }
 
@@ -41,32 +53,30 @@ namespace SendRecieveUDP.Service
             int totalBytes = (lastBit + ConstantSend.ROUND_TO_BYTE) / ConstantSend.BITS_IN_BYTE;
             byte[] packet = new byte[totalBytes];
 
-            var values = csvLine.Split(',');
+            string[] csvColumns = csvLine.Split(',');
 
-            foreach (var field in icd)
+            foreach (IcdField icdField in icd)
             {
-                if (!headerIndex.ContainsKey(field.Name))
-                    continue;
-
-                int colIndex = headerIndex[field.Name];
-                if (colIndex < 0 || colIndex >= values.Length) continue;
-
-                double actual = double.Parse(values[colIndex], CultureInfo.InvariantCulture);
-                double scale = field.Scale;
-                double shifted;
-                if (field.Min < 0)
+                if (headerIndex.TryGetValue(icdField.Name, out int colIndex)
+                && colIndex < csvColumns.Length)
                 {
-                    double value = Math.Round(actual / scale);
-                    double valueMin = Math.Round(field.Min / scale);
-                    shifted = value - valueMin;
-                }
-                else
-                {
-                    shifted = Math.Round(actual / scale);
-                }
+                    double rawValue = double.Parse(csvColumns[colIndex], CultureInfo.InvariantCulture);
+                    double scaleFactor = icdField.Scale;
+                    double shifted;
+                    if (icdField.Min < 0)
+                    {
+                        double value = Math.Round(rawValue / scaleFactor);
+                        double valueMin = Math.Round(icdField.Min / scaleFactor);
+                        shifted = value - valueMin;
+                    }
+                    else
+                    {
+                        shifted = Math.Round(rawValue / scaleFactor);
+                    }
 
-                ulong finalValue = (ulong)shifted;
-                WriteBits(packet, field.BitOffset, field.SizeBits, finalValue);
+                    ulong finalValue = (ulong)shifted;
+                    WriteBits(packet, icdField.BitOffset, icdField.SizeBits, finalValue);
+                }
             }
 
             return packet;
@@ -74,17 +84,7 @@ namespace SendRecieveUDP.Service
 
         private void WriteBits(byte[] buffer, int bitOffset, int bitCount, ulong value)
         {
-            for (int i = 0; i < bitCount; i++)
-            {
-                int bitVal = (int)((value >> i) & 1UL);
-                int byteIdx = (bitOffset + i) / ConstantSend.BITS_IN_BYTE;
-                int bitIdx = (bitOffset + i) % ConstantSend.BITS_IN_BYTE;
-
-                if (bitVal == 1)
-                    buffer[byteIdx] |= (byte)(1 << bitIdx);
-                else
-                    buffer[byteIdx] &= (byte)~(1 << bitIdx);
-            }
+            _bitManipulator.WriteBits(buffer, bitOffset, bitCount, value);
         }
     }
 }
