@@ -8,7 +8,7 @@ using SendRecieveUDP.Common.Constant;
 
 namespace SendRecieveUDP.Service.Csv
 {
-    public class CleanCsv : ICsvCleaner
+    public class CsvCleaner : ICsvCleaner
     {
         public void Run(string inputFile, string outputFile)
         {

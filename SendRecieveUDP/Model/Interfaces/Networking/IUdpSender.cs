@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace SendRecieveUDP.Model.Interfaces.Udp
 {
-    public interface IRecieve
+    public interface IUdpSender
     {
-        void ReceiveUDP(List<IcdField> icd, CancellationToken token);
+        void SendCsv(string csvFile, List<IcdField> icd);
     }
 }

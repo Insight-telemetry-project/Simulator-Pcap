@@ -7,11 +7,11 @@ using System.Net.Sockets;
 
 namespace SendRecieveUDP.Service.Udp
 {
-    public class Send : ISend
+    public class UdpSender : IUdpSender
     {
         private readonly IPacketBuilder _packetBuilder;
 
-        public Send(IPacketBuilder packetBuilder)
+        public UdpSender(IPacketBuilder packetBuilder)
         {
             _packetBuilder = packetBuilder;
         }
@@ -32,7 +32,7 @@ namespace SendRecieveUDP.Service.Udp
                 .Select((name, idx) => new { name, idx })
                 .ToDictionary(column => column.name, column => column.idx, StringComparer.Ordinal);
 
-            using var udp = new UdpClient();
+            using UdpClient udp = new UdpClient();
 
             foreach (string line in dataLines)
             {

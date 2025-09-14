@@ -8,9 +8,9 @@ namespace SendRecieveUDP.Service.Packet
 {
     public class PacketBuilder : IPacketBuilder
     {
-        private readonly IBitManipulator _bitManipulator;
+        private readonly IBitEncoder _bitManipulator;
 
-        public PacketBuilder(IBitManipulator bitManipulator)
+        public PacketBuilder(IBitEncoder bitManipulator)
         {
             _bitManipulator = bitManipulator;
         }
@@ -23,13 +23,21 @@ namespace SendRecieveUDP.Service.Packet
 
             string[] csvColumns = csvLine.Split(ConstantCsv.CSV_DELIMITER);
 
+            FillPacket(packet, csvColumns, icd, headerIndex);
+
+            return packet;
+        }
+
+        private void FillPacket(byte[] packet, string[] csvColumns, List<IcdField> icd, Dictionary<string, int> headerIndex)
+        {
             foreach (IcdField icdField in icd)
             {
                 if (headerIndex.TryGetValue(icdField.Name, out int colIndex)
-                && colIndex < csvColumns.Length)
+                    && colIndex < csvColumns.Length)
                 {
                     double rawValue = double.Parse(csvColumns[colIndex], CultureInfo.InvariantCulture);
                     double scaleFactor = icdField.Scale;
+
                     double shifted;
                     if (icdField.Min < ConstantCsv.EMPTY)
                     {
@@ -46,8 +54,34 @@ namespace SendRecieveUDP.Service.Packet
                     _bitManipulator.WriteBits(packet, icdField.BitOffset, icdField.SizeBits, finalValue);
                 }
             }
+        }
 
-            return packet;
+
+
+        public void DecodePacket(byte[] data, List<IcdField> icd)
+        {
+            foreach (IcdField field in icd)
+            {
+                int lastBit = field.BitOffset + field.SizeBits;
+                if (lastBit <= data.Length * ConstantBits.BITS_IN_BYTE)
+                {
+                    ulong value = _bitManipulator.ReadBits(data, field.BitOffset, field.SizeBits);
+
+                    double scale = field.Scale;
+                    double valueMin = Math.Round(field.Min / scale);
+                    double raw = value + valueMin;
+                    double actual = raw * scale;
+
+                    Console.WriteLine($"  {field.Name}: {actual} {field.Units}  [raw={raw}]");
+                }
+                else
+                {
+                    Console.WriteLine($"  {field.Name}: out of bounds (bitOffset={field.BitOffset}, sizeBits={field.SizeBits}, lenBits={data.Length * ConstantBits.BITS_IN_BYTE})");
+                }
+                Console.WriteLine();
+            }
         }
     }
+
+
 }
