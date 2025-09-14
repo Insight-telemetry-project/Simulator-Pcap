@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SendRecieveUDP.Model
+namespace SendRecieveUDP.Model.Interfaces.Csv
 {
-    public interface ISend
+    public interface ICsvCleaner
     {
-        void SendCsv(string csvFile, List<IcdField> icd);
+        void Run(string inputFile, string outputFile);
     }
 }

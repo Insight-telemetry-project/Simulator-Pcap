@@ -1,6 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SendRecieveUDP.Model;
-using SendRecieveUDP.Service;
+using SendRecieveUDP.Model.Interfaces.BitManipulation;
+using SendRecieveUDP.Model.Interfaces.Csv;
+using SendRecieveUDP.Model.Interfaces.Icd;
+using SendRecieveUDP.Model.Interfaces.Packet;
+using SendRecieveUDP.Model.Interfaces.Udp;
+using SendRecieveUDP.Service.BitManipulation;
+using SendRecieveUDP.Service.Csv;
+using SendRecieveUDP.Service.Packet;
+using SendRecieveUDP.Service.Udp;
 using System.Text.Json;
 
 namespace SendRecieveUDP
@@ -17,12 +24,16 @@ namespace SendRecieveUDP
             services.AddScoped<ISend, Send>();
             services.AddScoped<IRecieve, Recieve>();
             services.AddScoped<IBitManipulator, BitManipulator>();
+            services.AddScoped<IPacketBuilder, PacketBuilder>();
+
             using var provider = services.BuildServiceProvider();
 
+
+            var cancellationToken = new CancellationTokenSource();
             var reciever = provider.GetRequiredService<IRecieve>();
 
-            Task.Run(() => reciever.ReceiveUDP(icd));
-
+            Task.Run(() => reciever.ReceiveUDP(icd, cancellationToken.Token));
+            cancellationToken.CancelAfter(TimeSpan.FromSeconds(30));
 
 
 

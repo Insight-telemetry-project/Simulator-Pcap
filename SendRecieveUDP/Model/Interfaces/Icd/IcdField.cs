@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SendRecieveUDP.Model
+namespace SendRecieveUDP.Model.Interfaces.Icd
 {
     public class IcdField
     {
