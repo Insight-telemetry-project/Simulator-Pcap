@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SendRecieveUDP.Common.Constant
+namespace SendRecieveUDP.Model.Constant
 {
     public class ConstantTime
     {
-        public const int MINUTE = 60;
+        public const int SECONDS_IN_MINUTE = 60;
     }
 }

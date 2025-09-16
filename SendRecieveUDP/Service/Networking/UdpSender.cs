@@ -1,4 +1,4 @@
-﻿using SendRecieveUDP.Common.Constant;
+﻿using SendRecieveUDP.Model.Constant;
 using SendRecieveUDP.Model.Interfaces.Icd;
 using SendRecieveUDP.Model.Interfaces.Packet;
 using SendRecieveUDP.Model.Interfaces.Udp;
@@ -19,14 +19,14 @@ namespace SendRecieveUDP.Service.Udp
         public void SendCsv(string csvFile, List<IcdField> icd)
         {
             string[] lines = File.ReadAllLines(csvFile);
-            if (lines.Length < ConstantCsv.ONLY_TITLES)
+            if (lines.Length < ConstantCsv.MIN_ROWS_REQUIRED)
             {
                 Console.WriteLine("CSV file does not contain enough lines.");
                 return;
             }
 
-            string[] headers = lines[ConstantCsv.TITLE_ROW].Split(ConstantCsv.CSV_DELIMITER);
-            var dataLines = lines.Skip(ConstantCsv.ONE_LINE);
+            string[] headers = lines[ConstantCsv.HEADER_ROW_INDEX].Split(ConstantCsv.CSV_DELIMITER);
+            var dataLines = lines.Skip(ConstantCsv.DATA_START_ROW_INDEX);
 
             var headerIndex = headers
                 .Select((name, idx) => new { name, idx })
@@ -39,7 +39,7 @@ namespace SendRecieveUDP.Service.Udp
                 if (!string.IsNullOrWhiteSpace(line))
                 {
                     byte[] packet = _packetBuilder.BuildPacket(line, icd, headerIndex);
-                    udp.Send(packet, packet.Length, ConstantNetwork.LOCALHOST, ConstantNetwork.PORT);
+                    udp.Send(packet, packet.Length, ConstantNetwork.LOOPBACK_ADDRESS, ConstantNetwork.UDP_PORT);
                 }
             }
         }

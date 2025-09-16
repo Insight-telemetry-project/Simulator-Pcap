@@ -1,4 +1,4 @@
-﻿using SendRecieveUDP.Common.Constant;
+﻿using SendRecieveUDP.Model.Constant;
 using SendRecieveUDP.Model.Interfaces.BitManipulation;
 using SendRecieveUDP.Model.Interfaces.Icd;
 using SendRecieveUDP.Model.Interfaces.Packet;
@@ -19,12 +19,12 @@ namespace SendRecieveUDP.Service.Udp
         }
         public void ReceiveUDP(List<IcdField> icd, CancellationToken token)
         {
-            using var usp = new UdpClient(ConstantNetwork.PORT);
-            Console.WriteLine($"Listening on port {ConstantNetwork.PORT}...");
+            using var usp = new UdpClient(ConstantNetwork.UDP_PORT);
+            Console.WriteLine($"Listening on port {ConstantNetwork.UDP_PORT}...");
 
             while (!token.IsCancellationRequested)
             {
-                IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, ConstantBits.ZERO);
+                IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
                 byte[] data = usp.Receive(ref remoteEP);
 
                 Console.WriteLine("Received packet:");

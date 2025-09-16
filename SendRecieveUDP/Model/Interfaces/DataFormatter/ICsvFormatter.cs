@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SendRecieveUDP.Model.Interfaces.Csv
 {
-    public interface ICsvCleaner
+    public interface ICsvFormatter
     {
-        void Run(string inputFile, string outputFile);
+        void Format(string inputFile, string outputFile);
     }
 }

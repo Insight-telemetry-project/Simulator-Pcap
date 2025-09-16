@@ -9,7 +9,7 @@ using SendRecieveUDP.Service.Csv;
 using SendRecieveUDP.Service.Packet;
 using SendRecieveUDP.Service.Udp;
 using System.Text.Json;
-using SendRecieveUDP.Common.Constant;   
+using SendRecieveUDP.Model.Constant;
 
 namespace SendRecieveUDP
 {
@@ -21,28 +21,29 @@ namespace SendRecieveUDP
             List<IcdField> icd = JsonSerializer.Deserialize<List<IcdField>>(icdJson);
 
             var services = new ServiceCollection();
-            services.AddScoped<ICsvCleaner, CsvCleaner>();
-            services.AddScoped<IUdpSender, UdpSender>();
-            services.AddScoped<IUdpReceiver, UdpReceiver>();
-            services.AddScoped<IBitEncoder, BitEncoder>();
-            services.AddScoped<IPacketBuilder, PacketBuilder>();
-
-            using var provider = services.BuildServiceProvider();
+            services.AddSingleton<IUdpReceiver, UdpReceiver>();
+            services.AddSingleton<IUdpSender, UdpSender>();
+            services.AddSingleton<IPacketBuilder, PacketBuilder>();
+            services.AddSingleton<IBitEncoder, BitEncoder>();
+            services.AddSingleton<ICsvFormatter, CsvFormatter>();
 
 
-            var cancellationToken = new CancellationTokenSource();
-            var reciever = provider.GetRequiredService<IUdpReceiver>();
+            using ServiceProvider provider = services.BuildServiceProvider();
+
+
+            CancellationTokenSource cancellationToken = new CancellationTokenSource();
+            IUdpReceiver reciever = provider.GetRequiredService<IUdpReceiver>();
 
             Task.Run(() => reciever.ReceiveUDP(icd, cancellationToken.Token));
-            cancellationToken.CancelAfter(TimeSpan.FromSeconds(ConstantTime.MINUTE));
+            cancellationToken.CancelAfter(TimeSpan.FromSeconds(ConstantTime.SECONDS_IN_MINUTE));
 
 
 
 
-            var cleaner = provider.GetRequiredService<ICsvCleaner>();
-            cleaner.Run("5ROW.csv", "Longest_Master_23517_clean.csv");
+            ICsvFormatter cleaner = provider.GetRequiredService<ICsvFormatter>();
+            cleaner.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
 
-            var sender = provider.GetRequiredService<IUdpSender>();
+            IUdpSender sender = provider.GetRequiredService<IUdpSender>();
             sender.SendCsv("Longest_Master_23517_clean.csv", icd);
 
 

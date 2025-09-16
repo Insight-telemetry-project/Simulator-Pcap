@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SendRecieveUDP.Common.Constant
+namespace SendRecieveUDP.Model.Constant
 {
     public class ConstantNetwork
     {
-        public const int PORT = 5000;
-        public const string LOCALHOST = "127.0.0.1";
+        public const int UDP_PORT = 5000;
+        public const string LOOPBACK_ADDRESS = "127.0.0.1";
     }
 }

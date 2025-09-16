@@ -1,4 +1,4 @@
-﻿using SendRecieveUDP.Common.Constant;
+﻿using SendRecieveUDP.Model.Constant;
 using SendRecieveUDP.Model.Interfaces.BitManipulation;
 using SendRecieveUDP.Model.Interfaces.Icd;
 using SendRecieveUDP.Model.Interfaces.Packet;
@@ -18,7 +18,7 @@ namespace SendRecieveUDP.Service.Packet
         public byte[] BuildPacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
             int lastBit = icd.Max(field => field.BitOffset + field.SizeBits);
-            int totalBytes = (lastBit + ConstantBits.ROUND_TO_BYTE) / ConstantBits.BITS_IN_BYTE;
+            int totalBytes = (lastBit + ConstantBits.MAX_BIT_INDEX_IN_BYTE) / ConstantBits.BITS_IN_BYTE;
             byte[] packet = new byte[totalBytes];
 
             string[] csvColumns = csvLine.Split(ConstantCsv.CSV_DELIMITER);
@@ -39,7 +39,7 @@ namespace SendRecieveUDP.Service.Packet
                     double scaleFactor = icdField.Scale;
 
                     double shifted;
-                    if (icdField.Min < ConstantCsv.EMPTY)
+                    if (icdField.Min < ConstantCsv.EMPTY_ROW_COUNT)
                     {
                         double value = Math.Round(rawValue / scaleFactor);
                         double valueMin = Math.Round(icdField.Min / scaleFactor);
