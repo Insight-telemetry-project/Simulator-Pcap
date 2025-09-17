@@ -1,15 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SendRecieveUDP.Model.Constant;
 using SendRecieveUDP.Model.Interfaces.BitManipulation;
 using SendRecieveUDP.Model.Interfaces.Csv;
 using SendRecieveUDP.Model.Interfaces.Icd;
 using SendRecieveUDP.Model.Interfaces.Packet;
 using SendRecieveUDP.Model.Interfaces.Udp;
+using SendRecieveUDP.Model.Ro;
 using SendRecieveUDP.Service.BitManipulation;
 using SendRecieveUDP.Service.Csv;
 using SendRecieveUDP.Service.Packet;
 using SendRecieveUDP.Service.Udp;
+using System.Diagnostics;
 using System.Text.Json;
-using SendRecieveUDP.Model.Constant;
 
 namespace SendRecieveUDP
 {
@@ -23,7 +25,7 @@ namespace SendRecieveUDP
             var services = new ServiceCollection();
             services.AddSingleton<IUdpReceiver, UdpReceiver>();
             services.AddSingleton<IUdpSender, UdpSender>();
-            services.AddSingleton<IPacketBuilder, PacketBuilder>();
+            services.AddSingleton<IPacketEncoderDecoder, PacketEncoderDecoder>();
             services.AddSingleton<IBitEncoder, BitEncoder>();
             services.AddSingleton<ICsvFormatter, CsvFormatter>();
 
@@ -41,14 +43,15 @@ namespace SendRecieveUDP
 
 
             ICsvFormatter cleaner = provider.GetRequiredService<ICsvFormatter>();
-            cleaner.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
+            FunctionResult CsvFunctionResult = cleaner.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
+            if (CsvFunctionResult.Success)
+            {
+                IUdpSender sender = provider.GetRequiredService<IUdpSender>();
+                sender.SendCsv("Longest_Master_23517_clean.csv", icd);
+            }
 
-            IUdpSender sender = provider.GetRequiredService<IUdpSender>();
-            sender.SendCsv("Longest_Master_23517_clean.csv", icd);
 
-
-            Console.WriteLine("Press ENTER to exit...");
-            Console.ReadLine();
+            Debug.WriteLine("Press ENTER to exit...");
         }
     }
 }

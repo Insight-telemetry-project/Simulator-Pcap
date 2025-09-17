@@ -9,15 +9,15 @@ namespace SendRecieveUDP.Service.BitManipulation
         {
             for (int indexInByte = 0; indexInByte < bitCount; indexInByte++)
             {
-                int byteIdx = (bitOffset + indexInByte) / ConstantBits.BITS_IN_BYTE;
-                int bitIdx = ConstantBits.MAX_BIT_INDEX_IN_BYTE - ((bitOffset + indexInByte) % ConstantBits.BITS_IN_BYTE);
+                int byteIndex = (bitOffset + indexInByte) / ConstantBits.BITS_IN_BYTE;
+                int bitIndex = ConstantBits.MAX_BIT_INDEX_IN_BYTE - ((bitOffset + indexInByte) % ConstantBits.BITS_IN_BYTE);
 
-                int bitVal = (int)((value >> (bitCount - ConstantBits.SINGLE_BIT_VALUE - indexInByte)) & ConstantBits.SINGLE_BIT_VALUE);
+                int bitValue = (int)((value >> (bitCount - ConstantBits.SINGLE_BIT_VALUE - indexInByte)) & ConstantBits.SINGLE_BIT_VALUE);
 
-                if (bitVal == ConstantBits.SINGLE_BIT_VALUE)
-                    buffer[byteIdx] |= (byte)(ConstantBits.SINGLE_BIT_VALUE << bitIdx);
+                if (bitValue == ConstantBits.SINGLE_BIT_VALUE)
+                    buffer[byteIndex] |= (byte)(ConstantBits.SINGLE_BIT_VALUE << bitIndex);
                 else
-                    buffer[byteIdx] &= (byte)~(ConstantBits.SINGLE_BIT_VALUE << bitIdx);
+                    buffer[byteIndex] &= (byte)~(ConstantBits.SINGLE_BIT_VALUE << bitIndex);
             }
         }
 
@@ -26,10 +26,10 @@ namespace SendRecieveUDP.Service.BitManipulation
             ulong value = ConstantBits.NO_OFFSET;
             for (int indexInByte = 0; indexInByte < bitCount; indexInByte++)
             {
-                int byteIdx = (bitOffset + indexInByte) / ConstantBits.BITS_IN_BYTE;
-                int bitIdx = ConstantBits.MAX_BIT_INDEX_IN_BYTE - ((bitOffset + indexInByte) % ConstantBits.BITS_IN_BYTE);
+                int byteIndex = (bitOffset + indexInByte) / ConstantBits.BITS_IN_BYTE;
+                int bitIndex = ConstantBits.MAX_BIT_INDEX_IN_BYTE - ((bitOffset + indexInByte) % ConstantBits.BITS_IN_BYTE);
 
-                int bit = (buffer[byteIdx] >> bitIdx) & ConstantBits.SINGLE_BIT_VALUE;
+                int bit = (buffer[byteIndex] >> bitIndex) & ConstantBits.SINGLE_BIT_VALUE;
                 value = (value << ConstantBits.SINGLE_BIT_VALUE) | (ulong)bit; 
             }
             return value;

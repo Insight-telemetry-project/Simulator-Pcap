@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SendRecieveUDP.Model.Ro;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace SendRecieveUDP.Model.Interfaces.Csv
 {
     public interface ICsvFormatter
     {
-        void Format(string inputFile, string outputFile);
+        FunctionResult Format(string inputFile, string outputFile);
     }
 }

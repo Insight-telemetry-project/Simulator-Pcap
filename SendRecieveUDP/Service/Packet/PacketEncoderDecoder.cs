@@ -2,20 +2,21 @@
 using SendRecieveUDP.Model.Interfaces.BitManipulation;
 using SendRecieveUDP.Model.Interfaces.Icd;
 using SendRecieveUDP.Model.Interfaces.Packet;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace SendRecieveUDP.Service.Packet
 {
-    public class PacketBuilder : IPacketBuilder
+    public class PacketEncoderDecoder : IPacketEncoderDecoder
     {
         private readonly IBitEncoder _bitManipulator;
 
-        public PacketBuilder(IBitEncoder bitManipulator)
+        public PacketEncoderDecoder(IBitEncoder bitManipulator)
         {
             _bitManipulator = bitManipulator;
         }
 
-        public byte[] BuildPacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
+        public byte[] EncodePacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
             int lastBit = icd.Max(field => field.BitOffset + field.SizeBits);
             int totalBytes = (lastBit + ConstantBits.MAX_BIT_INDEX_IN_BYTE) / ConstantBits.BITS_IN_BYTE;
@@ -23,12 +24,12 @@ namespace SendRecieveUDP.Service.Packet
 
             string[] csvColumns = csvLine.Split(ConstantCsv.CSV_DELIMITER);
 
-            FillPacket(packet, csvColumns, icd, headerIndex);
+            EncodeFieldsIntoPacket(packet, csvColumns, icd, headerIndex);
 
             return packet;
         }
 
-        private void FillPacket(byte[] packet, string[] csvColumns, List<IcdField> icd, Dictionary<string, int> headerIndex)
+        private void EncodeFieldsIntoPacket(byte[] packet, string[] csvColumns, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
             foreach (IcdField icdField in icd)
             {
@@ -72,13 +73,12 @@ namespace SendRecieveUDP.Service.Packet
                     double raw = value + valueMin;
                     double actual = raw * scale;
 
-                    Console.WriteLine($"  {field.Name}: {actual} {field.Units}  [raw={raw}]");
+                   Debug.WriteLine($"  {field.Name}: {actual} {field.Units}  [raw={raw}]");
                 }
                 else
                 {
-                    Console.WriteLine($"  {field.Name}: out of bounds (bitOffset={field.BitOffset}, sizeBits={field.SizeBits}, lenBits={data.Length * ConstantBits.BITS_IN_BYTE})");
+                   Debug.WriteLine($"  {field.Name}: out of bounds (bitOffset={field.BitOffset}, sizeBits={field.SizeBits}, lenBits={data.Length * ConstantBits.BITS_IN_BYTE})");
                 }
-                Console.WriteLine();
             }
         }
     }

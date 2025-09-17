@@ -1,28 +1,28 @@
-﻿using SendRecieveUDP.Model.Interfaces.Csv;
+﻿using SendRecieveUDP.Model.Constant;
+using SendRecieveUDP.Model.Interfaces.Csv;
+using SendRecieveUDP.Model.Ro;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SendRecieveUDP.Model.Constant;
 
 namespace SendRecieveUDP.Service.Csv
 {
     public class CsvFormatter : ICsvFormatter
     {
-        public void Format(string inputFile, string outputFile)
+        public FunctionResult Format(string inputFile, string outputFile)
         {
             if (!File.Exists(inputFile))
             {
-                Console.WriteLine($" File {inputFile} not found!");
-                return;
+                return new FunctionResult(false, $"File {inputFile} not found!"); ;
             }
 
             string[] lines = File.ReadAllLines(inputFile);
             if (lines.Length == ConstantCsv.EMPTY_ROW_COUNT)
             {
-                Console.WriteLine(" CSV is empty!");
-                return;
+                return new FunctionResult(false, $"File {inputFile} CSV is empty!"); ;
             }
 
             using var streamWriter = new StreamWriter(outputFile);
@@ -30,18 +30,19 @@ namespace SendRecieveUDP.Service.Csv
 
             for (int rowIndex = ConstantCsv.DATA_START_ROW_INDEX; rowIndex < lines.Length; rowIndex++)
             {
-                string[] parts = lines[rowIndex].Split(ConstantCsv.CSV_DELIMITER);
+                string[] columns = lines[rowIndex].Split(ConstantCsv.CSV_DELIMITER);
 
-                for (int column = ConstantCsv.EMPTY_ROW_COUNT; column < parts.Length; column++)
+
+                for (int column = ConstantCsv.FIRST_COLUMN_INDEX; column < columns.Length; column++)
                 {
-                    if (parts[column].StartsWith(ConstantCsv.CLUSTER_PREFIX))
-                        parts[column] = parts[column].Substring(ConstantCsv.CLUSTER_PREFIX_LENGTH);
+                    if (columns[column].StartsWith(ConstantCsv.CLUSTER_PREFIX))
+                        columns[column] = columns[column].Substring(ConstantCsv.CLUSTER_PREFIX_LENGTH);
                 }
 
-                streamWriter.WriteLine(string.Join(ConstantCsv.CSV_DELIMITER, parts));
+                streamWriter.WriteLine(string.Join(ConstantCsv.CSV_DELIMITER, columns));
             }
 
-            Console.WriteLine($" Clean CSV saved to {outputFile}");
+            return new FunctionResult(true, $" Clean CSV saved to {outputFile}");
         }
     }
 }

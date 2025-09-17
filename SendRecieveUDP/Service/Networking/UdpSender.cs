@@ -2,6 +2,7 @@
 using SendRecieveUDP.Model.Interfaces.Icd;
 using SendRecieveUDP.Model.Interfaces.Packet;
 using SendRecieveUDP.Model.Interfaces.Udp;
+using System.Diagnostics;
 using System.Globalization;
 using System.Net.Sockets;
 
@@ -9,9 +10,9 @@ namespace SendRecieveUDP.Service.Udp
 {
     public class UdpSender : IUdpSender
     {
-        private readonly IPacketBuilder _packetBuilder;
+        private readonly IPacketEncoderDecoder _packetBuilder;
 
-        public UdpSender(IPacketBuilder packetBuilder)
+        public UdpSender(IPacketEncoderDecoder packetBuilder)
         {
             _packetBuilder = packetBuilder;
         }
@@ -21,14 +22,14 @@ namespace SendRecieveUDP.Service.Udp
             string[] lines = File.ReadAllLines(csvFile);
             if (lines.Length < ConstantCsv.MIN_ROWS_REQUIRED)
             {
-                Console.WriteLine("CSV file does not contain enough lines.");
+                Debug.WriteLine("CSV file does not contain enough lines.");
                 return;
             }
 
             string[] headers = lines[ConstantCsv.HEADER_ROW_INDEX].Split(ConstantCsv.CSV_DELIMITER);
-            var dataLines = lines.Skip(ConstantCsv.DATA_START_ROW_INDEX);
+            IEnumerable<string> dataLines = lines.Skip(ConstantCsv.DATA_START_ROW_INDEX);
 
-            var headerIndex = headers
+            Dictionary<string, int> headerIndex = headers
                 .Select((name, idx) => new { name, idx })
                 .ToDictionary(column => column.name, column => column.idx, StringComparer.Ordinal);
 
@@ -38,7 +39,7 @@ namespace SendRecieveUDP.Service.Udp
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    byte[] packet = _packetBuilder.BuildPacket(line, icd, headerIndex);
+                    byte[] packet = _packetBuilder.EncodePacket(line, icd, headerIndex);
                     udp.Send(packet, packet.Length, ConstantNetwork.LOOPBACK_ADDRESS, ConstantNetwork.UDP_PORT);
                 }
             }

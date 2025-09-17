@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using SendRecieveUDP.Model.Interfaces.Icd;
 namespace SendRecieveUDP.Model.Interfaces.Packet
 {
-    public interface IPacketBuilder
+    public interface IPacketEncoderDecoder
     {
-        byte[] BuildPacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex);
+        byte[] EncodePacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex);
 
         void DecodePacket(byte[] data, List<IcdField> icd);
 
