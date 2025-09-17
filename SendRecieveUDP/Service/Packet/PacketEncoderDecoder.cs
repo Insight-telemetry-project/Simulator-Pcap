@@ -40,7 +40,7 @@ namespace SendRecieveUDP.Service.Packet
                     double scaleFactor = icdField.Scale;
 
                     double shifted;
-                    if (icdField.Min < ConstantCsv.EMPTY_ROW_COUNT)
+                    if (icdField.Min < 0)
                     {
                         double value = Math.Round(rawValue / scaleFactor);
                         double valueMin = Math.Round(icdField.Min / scaleFactor);

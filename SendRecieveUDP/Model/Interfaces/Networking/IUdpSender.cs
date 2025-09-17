@@ -1,4 +1,5 @@
 ﻿using SendRecieveUDP.Model.Interfaces.Icd;
+using SendRecieveUDP.Model.Ro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace SendRecieveUDP.Model.Interfaces.Udp
 {
     public interface IUdpSender
     {
-        void SendCsv(string csvFile, List<IcdField> icd);
+        FunctionResult SendCsvUdp(string csvFile, List<IcdField> icd);
     }
 }

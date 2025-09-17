@@ -25,7 +25,7 @@ namespace SendRecieveUDP.Service.Csv
                 return new FunctionResult(false, $"File {inputFile} CSV is empty!"); ;
             }
 
-            using var streamWriter = new StreamWriter(outputFile);
+            using StreamWriter streamWriter = new StreamWriter(outputFile);
             streamWriter.WriteLine(lines[ConstantCsv.HEADER_ROW_INDEX]);
 
             for (int rowIndex = ConstantCsv.DATA_START_ROW_INDEX; rowIndex < lines.Length; rowIndex++)
@@ -35,6 +35,7 @@ namespace SendRecieveUDP.Service.Csv
 
                 for (int column = ConstantCsv.FIRST_COLUMN_INDEX; column < columns.Length; column++)
                 {
+                    // Remove "c_" prefix from cluster columns "c_123" -> "123"
                     if (columns[column].StartsWith(ConstantCsv.CLUSTER_PREFIX))
                         columns[column] = columns[column].Substring(ConstantCsv.CLUSTER_PREFIX_LENGTH);
                 }

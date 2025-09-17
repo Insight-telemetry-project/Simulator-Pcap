@@ -20,7 +20,7 @@ namespace SendRecieveUDP.Service.Udp
         }
         public void ReceiveUDP(List<IcdField> icd, CancellationToken token)
         {
-            using var usp = new UdpClient(ConstantNetwork.UDP_PORT);
+            using UdpClient usp = new UdpClient(ConstantNetwork.UDP_PORT);
            Debug.WriteLine($"Listening on port {ConstantNetwork.UDP_PORT}...");
 
             while (!token.IsCancellationRequested)
