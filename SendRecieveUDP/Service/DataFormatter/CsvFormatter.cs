@@ -12,17 +12,17 @@ namespace SendRecieveUDP.Service.Csv
 {
     public class CsvFormatter : ICsvFormatter
     {
-        public FunctionResult Format(string inputFile, string outputFile)
+        public SendCsvUdpResult Format(string inputFile, string outputFile)
         {
             if (!File.Exists(inputFile))
             {
-                return new FunctionResult(false, $"File {inputFile} not found!"); ;
+                return new SendCsvUdpResult(false, $"File {inputFile} not found!"); ;
             }
 
             string[] lines = File.ReadAllLines(inputFile);
             if (lines.Length == ConstantCsv.EMPTY_ROW_COUNT)
             {
-                return new FunctionResult(false, $"File {inputFile} CSV is empty!"); ;
+                return new SendCsvUdpResult(false, $"File {inputFile} CSV is empty!"); ;
             }
 
             using StreamWriter streamWriter = new StreamWriter(outputFile);
@@ -43,7 +43,7 @@ namespace SendRecieveUDP.Service.Csv
                 streamWriter.WriteLine(string.Join(ConstantCsv.CSV_DELIMITER, columns));
             }
 
-            return new FunctionResult(true, $" Clean CSV saved to {outputFile}");
+            return new SendCsvUdpResult(true, $" Clean CSV saved to {outputFile}");
         }
     }
 }

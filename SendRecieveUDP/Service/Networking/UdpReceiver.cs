@@ -32,8 +32,5 @@ namespace SendRecieveUDP.Service.Udp
                 _packetBuilder.DecodePacket(data, icd);
             }
         }
-
-        
-
     }
 }

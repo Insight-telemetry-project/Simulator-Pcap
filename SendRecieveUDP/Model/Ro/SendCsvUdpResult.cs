@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace SendRecieveUDP.Model.Ro
 {
-    public class FunctionResult
+    public class SendCsvUdpResult
     {
         public Boolean Success { get; }
         public string Message { get;}
 
-        public FunctionResult(Boolean success, string message)
+        public SendCsvUdpResult(Boolean success, string message)
         {
             Success = success;
             Message = message;

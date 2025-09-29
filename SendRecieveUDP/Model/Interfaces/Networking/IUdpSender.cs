@@ -10,6 +10,6 @@ namespace SendRecieveUDP.Model.Interfaces.Udp
 {
     public interface IUdpSender
     {
-        FunctionResult SendCsvUdp(string csvFile, List<IcdField> icd);
+        SendCsvUdpResult SendCsvUdp(string csvFile, List<IcdField> icd);
     }
 }

@@ -8,13 +8,13 @@ using System.Text.Json;
 
 namespace SendRecieveUDP.Service.Application
 {
-    public class ApplicationRunner
+    public class CsvUdpPipelineRunner
     {
         private readonly IUdpReceiver _receiver;
         private readonly IUdpSender _sender;
         private readonly ICsvFormatter _csvFormatter;
 
-        public ApplicationRunner(IUdpReceiver receiver, IUdpSender sender, ICsvFormatter csvFormatter)
+        public CsvUdpPipelineRunner(IUdpReceiver receiver, IUdpSender sender, ICsvFormatter csvFormatter)
         {
             _receiver = receiver;
             _sender = sender;
@@ -30,7 +30,7 @@ namespace SendRecieveUDP.Service.Application
             Task.Run(() => _receiver.ReceiveUDP(icd, cancellationToken.Token));
             cancellationToken.CancelAfter(TimeSpan.FromSeconds(ConstantTime.SECONDS_IN_MINUTE));
 
-            FunctionResult formatResult = _csvFormatter.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
+            SendCsvUdpResult formatResult = _csvFormatter.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
             if (formatResult.Success)
             {
                 _sender.SendCsvUdp("Longest_Master_23517_clean.csv", icd);
@@ -39,8 +39,9 @@ namespace SendRecieveUDP.Service.Application
             {
                 Debug.WriteLine($"CSV formatting failed: {formatResult.Message}");
             }
-
             
+
+
         }
     }
 }

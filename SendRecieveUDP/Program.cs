@@ -27,12 +27,16 @@ namespace SendRecieveUDP
             services.AddSingleton<IPacketEncoderDecoder, PacketEncoderDecoder>();
             services.AddSingleton<IBitEncoder, BitEncoder>();
             services.AddSingleton<ICsvFormatter, CsvFormatter>();
-            services.AddSingleton<ApplicationRunner>();
+            services.AddSingleton<CsvUdpPipelineRunner>();
 
             using ServiceProvider provider = services.BuildServiceProvider();
 
-            ApplicationRunner app = provider.GetRequiredService<ApplicationRunner>();
+            
+
+
+            CsvUdpPipelineRunner app = provider.GetRequiredService<CsvUdpPipelineRunner>();
             app.Run();
+
         }
     }
 }

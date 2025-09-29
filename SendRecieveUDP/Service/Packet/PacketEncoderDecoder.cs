@@ -19,7 +19,7 @@ namespace SendRecieveUDP.Service.Packet
         public byte[] EncodePacket(string csvLine, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
             int lastBit = icd.Max(field => field.BitOffset + field.SizeBits);
-            int totalBytes = (lastBit + ConstantBits.MAX_BIT_INDEX_IN_BYTE) / ConstantBits.BITS_IN_BYTE;
+            int totalBytes = (lastBit + ConstantBits.BITS_IN_BYTE - 1) / ConstantBits.BITS_IN_BYTE;
             byte[] packet = new byte[totalBytes];
 
             string[] csvColumns = csvLine.Split(ConstantCsv.CSV_DELIMITER);
@@ -61,6 +61,7 @@ namespace SendRecieveUDP.Service.Packet
 
         public void DecodePacket(byte[] data, List<IcdField> icd)
         {
+        
             foreach (IcdField field in icd)
             {
                 int lastBit = field.BitOffset + field.SizeBits;
@@ -77,7 +78,8 @@ namespace SendRecieveUDP.Service.Packet
                 }
                 else
                 {
-                   Debug.WriteLine($"  {field.Name}: out of bounds (bitOffset={field.BitOffset}, sizeBits={field.SizeBits}, lenBits={data.Length * ConstantBits.BITS_IN_BYTE})");
+                   Console.WriteLine(field.BitOffset);
+                    Console.WriteLine($"  {field.Name}: out of bounds (bitOffset={field.BitOffset}, sizeBits={field.SizeBits}, lenBits={data.Length * ConstantBits.BITS_IN_BYTE})");
                 }
             }
         }

@@ -9,6 +9,6 @@ namespace SendRecieveUDP.Model.Interfaces.Csv
 {
     public interface ICsvFormatter
     {
-        FunctionResult Format(string inputFile, string outputFile);
+        SendCsvUdpResult Format(string inputFile, string outputFile);
     }
 }
