@@ -1,39 +1,42 @@
-﻿using SendRecieveUDP.Model;
-using SendRecieveUDP.Service;
-using System.Net.Sockets;
-using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SendRecieveUDP.Model.Constant;
+using SendRecieveUDP.Model.Interfaces.BitManipulation;
+using SendRecieveUDP.Model.Interfaces.Csv;
+using SendRecieveUDP.Model.Interfaces.Icd;
+using SendRecieveUDP.Model.Interfaces.Packet;
+using SendRecieveUDP.Model.Interfaces.Udp;
+using SendRecieveUDP.Model.Ro;
+using SendRecieveUDP.Service.Application;
+using SendRecieveUDP.Service.BitManipulation;
+using SendRecieveUDP.Service.Csv;
+using SendRecieveUDP.Service.Packet;
+using SendRecieveUDP.Service.Udp;
+using System.Diagnostics;
 using System.Text.Json;
+
 namespace SendRecieveUDP
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            string icdJson = File.ReadAllText("icd.json");
-            var icd = JsonSerializer.Deserialize<List<IcdField>>(icdJson);
+            var services = new ServiceCollection();
 
-            Thread recieverThread = new Thread(() =>
-            {
-                Service.Recieve.ReceiveUDP(icd);
-            });
+            services.AddSingleton<IUdpReceiver, UdpReceiver>();
+            services.AddSingleton<IUdpSender, UdpSender>();
+            services.AddSingleton<IPacketEncoderDecoder, PacketEncoderDecoder>();
+            services.AddSingleton<IBitEncoder, BitEncoder>();
+            services.AddSingleton<ICsvFormatter, CsvFormatter>();
+            services.AddSingleton<CsvUdpPipelineRunner>();
 
-            recieverThread.IsBackground = true;
-            recieverThread.Start();
-            Thread.Sleep(500);
+            using ServiceProvider provider = services.BuildServiceProvider();
 
-
-
+            
 
 
-            CleanCsv.Run("5ROW.csv", "Longest_Master_23517_clean.csv");
+            CsvUdpPipelineRunner app = provider.GetRequiredService<CsvUdpPipelineRunner>();
+            app.Run();
 
-
-            Send.SendCSV("Longest_Master_23517_clean.csv", icd);
-
-
-
-            Console.WriteLine("Press ENTER to exit...");
-            Console.ReadLine();
         }
     }
 }

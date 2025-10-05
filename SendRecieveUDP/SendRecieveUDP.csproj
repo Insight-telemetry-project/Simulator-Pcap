@@ -8,19 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="icd.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="icd.json">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>icd.cs</LastGenOutput>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.9" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="5ROW.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="icd.json">
+      <Generator></Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Longest_Master_23517.csv">
