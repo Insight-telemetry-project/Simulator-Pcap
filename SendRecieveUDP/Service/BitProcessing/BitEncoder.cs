@@ -12,12 +12,12 @@ namespace SendRecieveUDP.Service.BitManipulation
                 int byteIndex = (bitOffset + indexInByte) / ConstantBits.BITS_IN_BYTE;
                 int bitIndex = ConstantBits.BITS_IN_BYTE - 1  - ((bitOffset + indexInByte) % ConstantBits.BITS_IN_BYTE);
 
-                int bitValue = (int)((value >> (bitCount - ConstantBits.SINGLE_BIT_VALUE - indexInByte)) & ConstantBits.SINGLE_BIT_VALUE);
+                int bitValue = (int)((value >> (bitCount - ConstantBits.STARTING_INDEX - indexInByte)) & ConstantBits.STARTING_INDEX);
 
-                if (bitValue == ConstantBits.SINGLE_BIT_VALUE)
-                    buffer[byteIndex] |= (byte)(ConstantBits.SINGLE_BIT_VALUE << bitIndex);
+                if (bitValue == ConstantBits.STARTING_INDEX)
+                    buffer[byteIndex] |= (byte)(ConstantBits.STARTING_INDEX << bitIndex);
                 else
-                    buffer[byteIndex] &= (byte)~(ConstantBits.SINGLE_BIT_VALUE << bitIndex);
+                    buffer[byteIndex] &= (byte)~(ConstantBits.STARTING_INDEX << bitIndex);
             }
         }
 
@@ -29,8 +29,8 @@ namespace SendRecieveUDP.Service.BitManipulation
                 int byteIndex = (bitOffset + indexInByte) / ConstantBits.BITS_IN_BYTE;
                 int bitIndex = ConstantBits.BITS_IN_BYTE - 1 - ((bitOffset + indexInByte) % ConstantBits.BITS_IN_BYTE);
 
-                int bit = (buffer[byteIndex] >> bitIndex) & ConstantBits.SINGLE_BIT_VALUE;
-                value = (value << ConstantBits.SINGLE_BIT_VALUE) | (ulong)bit; 
+                int bit = (buffer[byteIndex] >> bitIndex) & ConstantBits.STARTING_INDEX;
+                value = (value << ConstantBits.STARTING_INDEX) | (ulong)bit; 
             }
             return value;
         }

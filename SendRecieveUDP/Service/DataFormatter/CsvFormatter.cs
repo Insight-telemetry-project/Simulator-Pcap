@@ -37,7 +37,7 @@ namespace SendRecieveUDP.Service.Csv
                 {
                     // Remove "c_" prefix from cluster columns "c_123" -> "123"
                     if (columns[column].StartsWith(ConstantCsv.CLUSTER_PREFIX))
-                        columns[column] = columns[column].Substring(ConstantCsv.CLUSTER_PREFIX_LENGTH);
+                        columns[column] = columns[column].Substring(ConstantCsv.CLUSTER_PREFIX.Length);
                 }
 
                 streamWriter.WriteLine(string.Join(ConstantCsv.CSV_DELIMITER, columns));

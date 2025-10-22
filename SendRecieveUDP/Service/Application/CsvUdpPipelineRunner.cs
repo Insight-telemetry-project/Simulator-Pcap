@@ -13,6 +13,8 @@ namespace SendRecieveUDP.Service.Application
         private readonly IUdpReceiver _receiver;
         private readonly IUdpSender _sender;
         private readonly ICsvFormatter _csvFormatter;
+        const double secondsInMinute = TimeSpan.TicksPerMinute / (double)TimeSpan.TicksPerSecond;
+
 
         public CsvUdpPipelineRunner(IUdpReceiver receiver, IUdpSender sender, ICsvFormatter csvFormatter)
         {

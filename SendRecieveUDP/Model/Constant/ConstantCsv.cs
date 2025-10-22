@@ -16,6 +16,5 @@ namespace SendRecieveUDP.Model.Constant
         public const int FIRST_COLUMN_INDEX = 0;
         public const int DATA_START_ROW_INDEX = 1;
         public const string CLUSTER_PREFIX = "c_";
-        public const int CLUSTER_PREFIX_LENGTH = 2;
     }
 }
