@@ -16,5 +16,8 @@ namespace SendRecieveUDP.Model.Constant
         public const int FIRST_COLUMN_INDEX = 0;
         public const int DATA_START_ROW_INDEX = 1;
         public const string CLUSTER_PREFIX = "c_";
+        public const string FLIGTH_FILE = "Longest.csv";
+        public const string PROCESS_FILE = "Process.csv";
+
     }
 }

@@ -29,6 +29,7 @@ namespace SendRecieveUDP.Service.Packet
             return packet;
         }
 
+
         private void EncodeFieldsIntoPacket(byte[] packet, string[] csvColumns, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
             foreach (IcdField icdField in icd)
@@ -36,7 +37,22 @@ namespace SendRecieveUDP.Service.Packet
                 if (headerIndex.TryGetValue(icdField.Name, out int colIndex)
                     && colIndex < csvColumns.Length)
                 {
-                    double rawValue = double.Parse(csvColumns[colIndex], CultureInfo.InvariantCulture);
+                    string rawText = csvColumns[colIndex]?.Trim();
+                    double rawValue = 0;
+
+                    if (!string.IsNullOrEmpty(rawText))
+                    {
+                        if (!double.TryParse(rawText, NumberStyles.Float, CultureInfo.InvariantCulture, out rawValue))
+                        {
+                            rawValue = 0;
+                            Debug.WriteLine($"[WARN] Invalid value for '{icdField.Name}' ('{rawText}') -> replaced with 0");
+                        }
+                    }
+                    else
+                    {
+                        rawValue = 0;
+                    }
+
                     double scaleFactor = icdField.Scale;
 
                     double shifted;
@@ -56,7 +72,6 @@ namespace SendRecieveUDP.Service.Packet
                 }
             }
         }
-
 
 
         public void DecodePacket(byte[] data, List<IcdField> icd)

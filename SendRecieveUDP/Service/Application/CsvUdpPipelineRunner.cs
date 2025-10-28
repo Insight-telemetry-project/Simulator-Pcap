@@ -32,10 +32,10 @@ namespace SendRecieveUDP.Service.Application
             Task.Run(() => _receiver.ReceiveUDP(icd, cancellationToken.Token));
             cancellationToken.CancelAfter(TimeSpan.FromSeconds(ConstantTime.SECONDS_IN_MINUTE));
 
-            SendCsvUdpResult formatResult = _csvFormatter.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
+            SendCsvUdpResult formatResult = _csvFormatter.Format(ConstantCsv.FLIGTH_FILE, ConstantCsv.PROCESS_FILE);
             if (formatResult.Success)
             {
-                _sender.SendCsvUdp("Longest_Master_23517_clean.csv", icd);
+                _sender.SendCsvUdp(ConstantCsv.PROCESS_FILE, icd);
             }
             else
             {
