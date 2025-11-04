@@ -32,10 +32,10 @@ namespace SendRecieveUDP.Service.Application
             Task.Run(() => _receiver.ReceiveUDP(icd, cancellationToken.Token));
             cancellationToken.CancelAfter(TimeSpan.FromSeconds(ConstantTime.SECONDS_IN_MINUTE));
 
-            SendCsvUdpResult formatResult = _csvFormatter.Format(ConstantCsv.FLIGTH_FILE, ConstantCsv.PROCESS_FILE);
+            SendCsvUdpResult formatResult = _csvFormatter.Format(ConstantCsv.FLIGHT_FILE, ConstantCsv.PROCESSED_FILE);
             if (formatResult.Success)
             {
-                _sender.SendCsvUdp(ConstantCsv.PROCESS_FILE, icd);
+                _sender.SendCsvUdp(ConstantCsv.PROCESSED_FILE, icd);
             }
             else
             {

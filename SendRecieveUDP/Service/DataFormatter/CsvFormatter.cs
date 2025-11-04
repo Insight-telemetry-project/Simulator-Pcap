@@ -2,11 +2,9 @@
 using SendRecieveUDP.Model.Interfaces.Csv;
 using SendRecieveUDP.Model.Ro;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SendRecieveUDP.Service.Csv
 {
@@ -15,35 +13,54 @@ namespace SendRecieveUDP.Service.Csv
         public SendCsvUdpResult Format(string inputFile, string outputFile)
         {
             if (!File.Exists(inputFile))
-            {
-                return new SendCsvUdpResult(false, $"File {inputFile} not found!"); ;
-            }
+                return new SendCsvUdpResult(false, $"File {inputFile} not found!");
 
             string[] lines = File.ReadAllLines(inputFile);
             if (lines.Length == ConstantCsv.EMPTY_ROW_COUNT)
+                return new SendCsvUdpResult(false, $"File {inputFile} CSV is empty!");
+
+            long baseEpoch = GetBaseEpoch();
+
+            string[] headers = lines[ConstantCsv.HEADER_ROW_INDEX].Split(ConstantCsv.CSV_DELIMITER);
+            int timestepIndex = Array.IndexOf(headers, "timestep");
+
+            using StreamWriter writer = new StreamWriter(outputFile);
+            writer.WriteLine(lines[ConstantCsv.HEADER_ROW_INDEX]);
+
+            foreach (string line in lines.Skip(ConstantCsv.DATA_START_ROW_INDEX))
             {
-                return new SendCsvUdpResult(false, $"File {inputFile} CSV is empty!"); ;
+                string[] columns = line.Split(ConstantCsv.CSV_DELIMITER);
+                ConvertTimestepToEpoch(columns, timestepIndex, baseEpoch);
+                CleanClusterPrefixes(columns);
+                writer.WriteLine(string.Join(ConstantCsv.CSV_DELIMITER, columns));
             }
 
-            using StreamWriter streamWriter = new StreamWriter(outputFile);
-            streamWriter.WriteLine(lines[ConstantCsv.HEADER_ROW_INDEX]);
+            return new SendCsvUdpResult(true, $"Clean CSV saved to {outputFile}");
+        }
 
-            for (int rowIndex = ConstantCsv.DATA_START_ROW_INDEX; rowIndex < lines.Length; rowIndex++)
+        private long GetBaseEpoch()
+        {
+            DateTime epochStart = DateTime.Now.Date;
+            return new DateTimeOffset(epochStart).ToUnixTimeSeconds();
+        }
+
+        private void ConvertTimestepToEpoch(string[] columns, int timestepIndex, long baseEpoch)
+        {
+            if (double.TryParse(columns[timestepIndex], NumberStyles.Float, CultureInfo.InvariantCulture, out double secondsFromStart))
             {
-                string[] columns = lines[rowIndex].Split(ConstantCsv.CSV_DELIMITER);
-
-
-                for (int column = ConstantCsv.FIRST_COLUMN_INDEX; column < columns.Length; column++)
-                {
-                    // Remove "c_" prefix from cluster columns "c_123" -> "123"
-                    if (columns[column].StartsWith(ConstantCsv.CLUSTER_PREFIX))
-                        columns[column] = columns[column].Substring(ConstantCsv.CLUSTER_PREFIX.Length);
-                }
-
-                streamWriter.WriteLine(string.Join(ConstantCsv.CSV_DELIMITER, columns));
+                long epochValue = baseEpoch + (long)secondsFromStart;
+                columns[timestepIndex] = epochValue.ToString(CultureInfo.InvariantCulture);
+                Console.WriteLine($"Converted timestep  {epochValue}");
             }
+        }
 
-            return new SendCsvUdpResult(true, $" Clean CSV saved to {outputFile}");
+        private void CleanClusterPrefixes(string[] columns)
+        {
+            for (int i = ConstantCsv.FIRST_COLUMN_INDEX; i < columns.Length; i++)
+            {
+                if (columns[i].StartsWith(ConstantCsv.CLUSTER_PREFIX))
+                    columns[i] = columns[i].Substring(ConstantCsv.CLUSTER_PREFIX.Length);
+            }
         }
     }
 }
