@@ -13,6 +13,8 @@ namespace SendRecieveUDP.Service.Application
         private readonly IUdpReceiver _receiver;
         private readonly IUdpSender _sender;
         private readonly ICsvFormatter _csvFormatter;
+        const double secondsInMinute = TimeSpan.TicksPerMinute / (double)TimeSpan.TicksPerSecond;
+
 
         public CsvUdpPipelineRunner(IUdpReceiver receiver, IUdpSender sender, ICsvFormatter csvFormatter)
         {
@@ -30,10 +32,10 @@ namespace SendRecieveUDP.Service.Application
             Task.Run(() => _receiver.ReceiveUDP(icd, cancellationToken.Token));
             cancellationToken.CancelAfter(TimeSpan.FromSeconds(ConstantTime.SECONDS_IN_MINUTE));
 
-            SendCsvUdpResult formatResult = _csvFormatter.Format("5ROW.csv", "Longest_Master_23517_clean.csv");
+            SendCsvUdpResult formatResult = _csvFormatter.Format(ConstantCsv.FLIGHT_FILE, ConstantCsv.PROCESSED_FILE);
             if (formatResult.Success)
             {
-                _sender.SendCsvUdp("Longest_Master_23517_clean.csv", icd);
+                _sender.SendCsvUdp(ConstantCsv.PROCESSED_FILE, icd);
             }
             else
             {

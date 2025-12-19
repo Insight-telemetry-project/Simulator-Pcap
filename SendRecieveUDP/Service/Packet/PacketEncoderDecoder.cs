@@ -29,34 +29,46 @@ namespace SendRecieveUDP.Service.Packet
             return packet;
         }
 
+
         private void EncodeFieldsIntoPacket(byte[] packet, string[] csvColumns, List<IcdField> icd, Dictionary<string, int> headerIndex)
         {
-            foreach (IcdField icdField in icd)
+            foreach (IcdField field in icd)
             {
-                if (headerIndex.TryGetValue(icdField.Name, out int colIndex)
-                    && colIndex < csvColumns.Length)
+                if (headerIndex.TryGetValue(field.Name, out int colIndex) && colIndex < csvColumns.Length)
                 {
-                    double rawValue = double.Parse(csvColumns[colIndex], CultureInfo.InvariantCulture);
-                    double scaleFactor = icdField.Scale;
+                    double rawValue = ParseValue(csvColumns[colIndex], field.Name);
+                    double scaledValue = CalculateScaledValue(field, rawValue);
 
-                    double shifted;
-                    if (icdField.Min < 0)
-                    {
-                        double value = Math.Round(rawValue / scaleFactor);
-                        double valueMin = Math.Round(icdField.Min / scaleFactor);
-                        shifted = value - valueMin;
-                    }
-                    else
-                    {
-                        shifted = Math.Round(rawValue / scaleFactor);
-                    }
-
-                    ulong finalValue = (ulong)shifted;
-                    _bitManipulator.WriteBits(packet, icdField.BitOffset, icdField.SizeBits, finalValue);
+                    ulong finalValue = (ulong)scaledValue;
+                    _bitManipulator.WriteBits(packet, field.BitOffset, field.SizeBits, finalValue);
                 }
             }
         }
 
+        private double ParseValue(string? text, string fieldName)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return 0;
+
+            if (double.TryParse(text.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out double val))
+                return val;
+
+            Debug.WriteLine($"Invalid value for '{fieldName}' ('{text}') replaced with 0");
+            return 0;
+        }
+
+        private double CalculateScaledValue(IcdField field, double rawValue)
+        {
+            double scaleFactor = field.Scale;
+            if (field.Min < 0)
+            {
+                double value = Math.Round(rawValue / scaleFactor);
+                double valueMin = Math.Round(field.Min / scaleFactor);
+                return value - valueMin;
+            }
+
+            return Math.Round(rawValue / scaleFactor);
+        }
 
 
         public void DecodePacket(byte[] data, List<IcdField> icd)
